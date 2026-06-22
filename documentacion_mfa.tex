@@ -106,6 +106,10 @@ A través de este proyecto, se materializa la comprensión de la MFA como una ca
 
 Este informe técnico documenta meticulosamente las fases del proyecto, desde la justificación teórica y la definición de objetivos, hasta la exposición detallada del diagrama arquitectónico, los flujos criptográficos, las herramientas empleadas y las conclusiones de seguridad extraídas durante la fase de evaluación.
 
+\vspace{0.5cm}
+\noindent\textbf{Repositorio del Proyecto:} El código fuente completo, incluyendo el frontend, el backend y los scripts de ejecución automatizada, se encuentra alojado y versionado en el siguiente repositorio de GitHub: \\
+\href{https://github.com/TU_USUARIO/Seguridad_Informatica_MFA}{\texttt{https://github.com/TU\_USUARIO/Seguridad\_Informatica\_MFA}}
+
 \section{Planteamiento del Problema y Justificación del Uso de MFA}
 
 \subsection{Definición del Problema}
@@ -176,45 +180,7 @@ El siguiente diagrama modela la interacción entre los diferentes nodos del sist
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    node distance=2.5cm and 3cm,
-    client/.style={rectangle, rounded corners, draw=primary, fill=primary!10, very thick, text centered, text width=3cm, minimum height=1.5cm},
-    server/.style={rectangle, draw=secondary, fill=secondary!10, very thick, text centered, text width=3cm, minimum height=1.5cm},
-    database/.style={cylinder, draw=black, fill=gray!20, aspect=0.3, shape border rotate=90, text centered, text width=2.5cm, minimum height=2cm},
-    mobile/.style={rectangle, rounded corners=0.2cm, draw=black, fill=white, thick, text centered, text width=2cm, minimum height=3cm},
-    line/.style={draw, -Latex, thick},
-    arrowtext/.style={font=\footnotesize, sloped, anchor=south}
-]
-
-% Nodes
-\node (browser) [client] {\textbf{Navegador Web} \\ (React SPA)};
-\node (mobile) [mobile, left=of browser] {\textbf{Dispositivo Móvil}\\ (App TOTP: Authy/Google Auth)};
-\node (api) [server, below=3cm of browser] {\textbf{Servidor API Node.js} \\ (Express + otplib + JWT)};
-\node (db) [database, right=of api] {\textbf{SQLite DB} \\ Users, Products, Orders};
-
-% Encapsulation boxes
-\begin{scope}[on background layer]
-    \node [fill=blue!5, rounded corners, fit=(browser) (mobile), draw=blue!30, thick, inner sep=0.5cm] (clientzone) {};
-    \node [anchor=north west, font=\bfseries\color{blue!60}] at (clientzone.north west) {Capa de Cliente};
-
-    \node [fill=orange!5, rounded corners, fit=(api) (db), draw=orange!30, thick, inner sep=0.5cm] (serverzone) {};
-    \node [anchor=north west, font=\bfseries\color{orange!60}] at (serverzone.north west) {Capa de Servidor (Backend Segura)};
-\end{scope}
-
-% Paths
-\draw [line] (browser) to[bend left=15] node[arrowtext] {1. POST /login (Credenciales)} (api);
-\draw [line] (api) to[bend left=15] node[arrowtext, below] {2. Retorna estado 2FA REQUIRED} (browser);
-
-\draw [line, dashed, red] (mobile) -- node[arrowtext, rotate=90, anchor=south, color=red] {Escanea QR / Semilla} (browser);
-\draw [line] (browser) to[bend left=45] node[arrowtext] {3. Input Código TOTP (6 dígitos)} (mobile);
-\draw [line] (browser) -- node[arrowtext] {4. POST /login-verify (Código)} (api);
-
-\draw [line] (api) to[bend left=15] node[arrowtext] {Query / Comparar Hashes} (db);
-\draw [line] (db) to[bend left=15] node[arrowtext, below] {Datos Usuario / Secret} (api);
-
-\draw [line, green!60!black] (api) to[out=135, in=225] node[arrowtext] {5. Emisión de JWT Válido} (browser);
-
-\end{tikzpicture}
+\includegraphics[width=0.8\textwidth]{images/mfa_architecture_diagram.png}
 \caption{Diagrama de Arquitectura y Secuencia de Autenticación MFA}
 \label{fig:arquitectura}
 \end{figure}
@@ -382,6 +348,38 @@ Si bien un axioma conocido de la seguridad informática expone la existencia de 
     \item \textbf{Incorporación QR Estándar:} La compatibilidad total con aplicaciones de mercado ubicuas, gracias al uso formalizado del estándar `otpauth://`, permite a los usuarios configurar el mecanismo con aplicaciones que, muy probablemente, ya portan instaladas en sus teléfonos móviles.
     \item \textbf{Manejo Transparente de Fallos:} Los errores en la introducción de código derivan en notificaciones claras e inmediatas de validación vía la herramienta `sonner` de React, impidiendo estados de bloqueo fantasma u ocultos que desconcierten a los consumidores del portal.
 \end{itemize}
+
+\section{Evidencia de Funcionamiento del Prototipo}
+
+A continuación se presentan capturas de pantalla que evidencian el funcionamiento real del portal web y la implementación estricta del flujo MFA.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/login.png}
+    \caption{Pantalla de inicio de sesión de Colombia Store.}
+    \label{fig:login}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/qr.png}
+    \caption{Bloqueo de acceso y presentación del código QR para vinculación TOTP.}
+    \label{fig:qr}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/dashboard.png}
+    \caption{Acceso exitoso al catálogo tras verificación MFA.}
+    \label{fig:dashboard}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/login_2fa.png}
+    \caption{Intercepción de inicio de sesión exigiendo el código TOTP temporal.}
+    \label{fig:login_2fa}
+\end{figure}
 
 \section{Limitaciones y Posibles Mejoras Tecnológicas}
 
