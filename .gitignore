@@ -1,0 +1,53 @@
+# Dependencias de Node.js
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Archivos de Entorno
+.env
+.env.local
+.env.development
+.env.production
+
+# Archivos compilados del Frontend (Vite/React)
+frontend/dist/
+frontend/dist-ssr/
+frontend/.eslintcache
+
+# Archivos de Base de Datos SQLite (Opcional: ignoramos temporales, permitiendo que suba el principal si quiere)
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Archivos Temporales y Logs generados durante el desarrollo
+output.log
+temp_output.txt
+
+# Documentos innecesarios para el código fuente
+PropuestaProyectos.pdf
+
+# Archivos Auxiliares de Compilación LaTeX (evita que el repo se ensucie al compilar el PDF)
+*.aux
+*.log
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.lof
+*.lot
+
+# Archivos del Sistema Operativo y Editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
